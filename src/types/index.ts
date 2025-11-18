@@ -43,7 +43,6 @@ export interface ParamLTL {
 }
 
 export interface ParamLotacao {
-  gris: number
   overhead: number
   das: number
   icmsDefault: number

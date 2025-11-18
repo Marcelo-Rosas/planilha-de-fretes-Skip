@@ -32,19 +32,6 @@ export default function ParamLotacaoPage() {
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label>GRIS %</Label>
-            <Input
-              type="number"
-              value={paramLotacao.gris * 100}
-              onChange={(e) =>
-                setParamLotacao({
-                  ...paramLotacao,
-                  gris: parseFloat(e.target.value) / 100,
-                })
-              }
-            />
-          </div>
-          <div className="space-y-2">
             <Label>Overhead %</Label>
             <Input
               type="number"

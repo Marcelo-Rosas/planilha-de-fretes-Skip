@@ -104,10 +104,13 @@ export default function TabelaLotacaoPage() {
                 <TableCell>
                   <Input
                     type="number"
-                    step="0.0001"
-                    value={row.custo_valor}
+                    value={row.custo_valor * 100}
                     onChange={(e) =>
-                      handleInputChange(row.id, 'custo_valor', e.target.value)
+                      handleInputChange(
+                        row.id,
+                        'custo_valor',
+                        String(parseFloat(e.target.value) / 100),
+                      )
                     }
                     className="w-full bg-transparent"
                   />
@@ -115,10 +118,13 @@ export default function TabelaLotacaoPage() {
                 <TableCell>
                   <Input
                     type="number"
-                    step="0.0001"
-                    value={row.gris}
+                    value={row.gris * 100}
                     onChange={(e) =>
-                      handleInputChange(row.id, 'gris', e.target.value)
+                      handleInputChange(
+                        row.id,
+                        'gris',
+                        String(parseFloat(e.target.value) / 100),
+                      )
                     }
                     className="w-full bg-transparent"
                   />
@@ -126,10 +132,13 @@ export default function TabelaLotacaoPage() {
                 <TableCell>
                   <Input
                     type="number"
-                    step="0.0001"
-                    value={row.tso}
+                    value={row.tso * 100}
                     onChange={(e) =>
-                      handleInputChange(row.id, 'tso', e.target.value)
+                      handleInputChange(
+                        row.id,
+                        'tso',
+                        String(parseFloat(e.target.value) / 100),
+                      )
                     }
                     className="w-full bg-transparent"
                   />

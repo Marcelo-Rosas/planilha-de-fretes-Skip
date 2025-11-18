@@ -32,7 +32,6 @@ export const initialParamLTL: ParamLTL = {
 }
 
 export const initialParamLotacao: ParamLotacao = {
-  gris: 0.001,
   overhead: 0.1,
   das: 0.06,
   icmsDefault: 0.12,

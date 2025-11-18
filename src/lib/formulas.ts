@@ -67,7 +67,7 @@ export const calculateAll = (row: OperationalRow, store: FreightState) => {
       case 'LTL':
         return paramLTL.gris * row.valorNF
       case 'LOTAÇÃO':
-        return (lotacaoRate?.gris ?? paramLotacao.gris) * row.valorNF
+        return (lotacaoRate?.gris ?? 0) * row.valorNF
       case 'ANTT':
         return paramANTT.gris * row.valorNF
       case 'CONTEINER':
