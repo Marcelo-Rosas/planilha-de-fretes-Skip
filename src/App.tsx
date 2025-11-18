@@ -1,30 +1,51 @@
-/* Main App Component - Handles routing (using react-router-dom), query client and other providers - use this file to add all routes */
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { FreightProvider } from '@/stores/useFreightStore'
+
+import Layout from './components/Layout'
 import Index from './pages/Index'
 import NotFound from './pages/NotFound'
-import Layout from './components/Layout'
-
-// ONLY IMPORT AND RENDER WORKING PAGES, NEVER ADD PLACEHOLDER COMPONENTS OR PAGES IN THIS FILE
-// AVOID REMOVING ANY CONTEXT PROVIDERS FROM THIS FILE (e.g. TooltipProvider, Toaster, Sonner)
+import ParamLTLPage from './pages/ParamLTL'
+import ParamLotacaoPage from './pages/ParamLotacao'
+import ParamANTTPage from './pages/ParamANTT'
+import ParamConteinerPage from './pages/ParamConteiner'
+import TabelaLTLPage from './pages/TabelaLTL'
+import TabelaLotacaoPage from './pages/TabelaLotacao'
+import EixosPage from './pages/Eixos'
+import CoeficientesANTTPage from './pages/CoeficientesANTT'
+import ICMSInterestadualPage from './pages/ICMSInterestadual'
 
 const App = () => (
-  <BrowserRouter
-    future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
-  >
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES MUST BE ADDED HERE */}
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </TooltipProvider>
+  <BrowserRouter>
+    <FreightProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Index />} />
+            <Route path="/param-ltl" element={<ParamLTLPage />} />
+            <Route path="/param-lotacao" element={<ParamLotacaoPage />} />
+            <Route path="/param-antt" element={<ParamANTTPage />} />
+            <Route path="/param-conteiner" element={<ParamConteinerPage />} />
+            <Route path="/tabela-ltl" element={<TabelaLTLPage />} />
+            <Route path="/tabela-lotacao" element={<TabelaLotacaoPage />} />
+            <Route path="/eixos" element={<EixosPage />} />
+            <Route
+              path="/coeficientes-antt"
+              element={<CoeficientesANTTPage />}
+            />
+            <Route
+              path="/icms-interestadual"
+              element={<ICMSInterestadualPage />}
+            />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </TooltipProvider>
+    </FreightProvider>
   </BrowserRouter>
 )
 

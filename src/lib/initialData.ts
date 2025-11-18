@@ -1,0 +1,194 @@
+import {
+  ParamLTL,
+  ParamLotacao,
+  ParamANTT,
+  ParamConteiner,
+  TabelaLTLRow,
+  TabelaLotacaoRow,
+  EixoRow,
+  CoeficienteANTTRow,
+  ICMSInterestadualRow,
+  OperationalRow,
+  Methodology,
+} from '@/types'
+import { v4 as uuidv4 } from 'uuid'
+
+export const initialParamLTL: ParamLTL = {
+  custoValor: 0.003,
+  tso: 0.002,
+  gris: 0.001,
+  overhead: 0.1,
+  das: 0.06,
+  icmsDefault: 0.12,
+  rctrc: 0.0005,
+  rcdc: 0.0005,
+  valorPessoa: 100,
+  baseDasIncluiPedagio: true,
+  baseDasIncluiCarga: true,
+  baseDasIncluiDescarga: true,
+  baseDasIncluiAluguel: true,
+  overheadBase: 'Receita_CT-e',
+  margensOpcoes: '15;20;25;30',
+}
+
+export const initialParamLotacao: ParamLotacao = {
+  gris: 0.001,
+  overhead: 0.1,
+  das: 0.06,
+  icmsDefault: 0.12,
+  rctrc: 0.0005,
+  rcdc: 0.0005,
+  valorPessoa: 100,
+  baseDasIncluiPedagio: true,
+  baseDasIncluiCarga: true,
+  baseDasIncluiDescarga: true,
+  baseDasIncluiAluguel: true,
+  overheadBase: 'Receita_CT-e',
+  margensOpcoes: '15;20;25;30',
+}
+
+export const initialParamANTT: ParamANTT = {
+  eixosDefault: 6,
+  retornoVazioMultDefault: 0.92,
+  retornoVazioMultMaximo: 0.7,
+  rateioFixos: 0.5,
+  gris: 0.001,
+  adValorem: 0.003,
+  das: 0.06,
+  icmsDefault: 0.12,
+  rctrc: 0.0005,
+  rcdc: 0.0005,
+  overhead: 0.1,
+  valorPessoa: 100,
+  margemComercial: 0.15,
+  tabelaANTT: 'A – Carga Geral',
+  baseDasIncluiPedagio: true,
+  baseDasIncluiGeneralidades: true,
+  overheadBase: 'Receita_CT-e',
+  margensOpcoes: '15;20;25;30',
+}
+
+export const initialParamConteiner: ParamConteiner = {
+  gris: 0.001,
+  adValorem: 0.003,
+  tso: 0.002,
+  das: 0.06,
+  icms: 0.12,
+  overhead: 0.1,
+  rctrc: 0.0005,
+  rcdc: 0.0005,
+  valorPessoa: 100,
+}
+
+export const initialTabelaLTL: TabelaLTLRow[] = [
+  {
+    id: uuidv4(),
+    de_km: 0,
+    ate_km: 100,
+    rs_t: 150,
+    custo_valor: 0.003,
+    tso: 0.002,
+    gris: 0.001,
+  },
+  {
+    id: uuidv4(),
+    de_km: 101,
+    ate_km: 500,
+    rs_t: 130,
+    custo_valor: 0.003,
+    tso: 0.002,
+    gris: 0.001,
+  },
+  {
+    id: uuidv4(),
+    de_km: 501,
+    ate_km: 1000,
+    rs_t: 110,
+    custo_valor: 0.003,
+    tso: 0.002,
+    gris: 0.001,
+  },
+]
+
+export const initialTabelaLotacao: TabelaLotacaoRow[] = [
+  {
+    id: uuidv4(),
+    de_km: 0,
+    ate_km: 100,
+    rs_t: 120,
+    custo_valor: 0.002,
+    tso: 0.001,
+    gris: 0.001,
+  },
+  {
+    id: uuidv4(),
+    de_km: 101,
+    ate_km: 500,
+    rs_t: 100,
+    custo_valor: 0.002,
+    tso: 0.001,
+    gris: 0.001,
+  },
+  {
+    id: uuidv4(),
+    de_km: 501,
+    ate_km: 1000,
+    rs_t: 90,
+    custo_valor: 0.002,
+    tso: 0.001,
+    gris: 0.001,
+  },
+]
+
+export const initialEixos: EixoRow[] = [
+  { id: uuidv4(), eixo: 2, descricao: 'Caminhão-toco' },
+  { id: uuidv4(), eixo: 3, descricao: 'Caminhão-truck' },
+  { id: uuidv4(), eixo: 4, descricao: 'Cavalo mecânico e semirreboque' },
+  { id: uuidv4(), eixo: 5, descricao: 'Cavalo mecânico e semirreboque' },
+  { id: uuidv4(), eixo: 6, descricao: 'Cavalo mecânico e semirreboque' },
+  { id: uuidv4(), eixo: 7, descricao: 'Romeu e Julieta' },
+  { id: uuidv4(), eixo: 9, descricao: 'Bitrem/Tritrem' },
+]
+
+export const initialCoeficientesANTT: CoeficienteANTTRow[] = [
+  { id: uuidv4(), tabela: 'A', eixos: 2, ccd: 1.5, cc: 150 },
+  { id: uuidv4(), tabela: 'A', eixos: 3, ccd: 1.8, cc: 180 },
+  { id: uuidv4(), tabela: 'A', eixos: 4, ccd: 2.1, cc: 210 },
+  { id: uuidv4(), tabela: 'A', eixos: 5, ccd: 2.4, cc: 240 },
+  { id: uuidv4(), tabela: 'A', eixos: 6, ccd: 2.7, cc: 270 },
+  { id: uuidv4(), tabela: 'A', eixos: 7, ccd: 3.0, cc: 300 },
+  { id: uuidv4(), tabela: 'A', eixos: 9, ccd: 3.5, cc: 350 },
+]
+
+export const initialICMSInterestadual: ICMSInterestadualRow[] = [
+  { id: uuidv4(), uf_origem: 'SP', uf_destino: 'RJ', percent: 0.12 },
+  { id: uuidv4(), uf_origem: 'SP', uf_destino: 'MG', percent: 0.12 },
+  { id: uuidv4(), uf_origem: 'MG', uf_destino: 'SP', percent: 0.12 },
+  { id: uuidv4(), uf_origem: 'RJ', uf_destino: 'SP', percent: 0.12 },
+]
+
+export const initialOperationalRows: OperationalRow[] = [
+  {
+    id: uuidv4(),
+    embarcador: 'Empresa A',
+    cliente: 'Cliente X',
+    ufOrigem: 'SP',
+    ufDestino: 'RJ',
+    km: 600,
+    peso: 15,
+    fobCif: 'CIF',
+    valorNF: 150000,
+    usarTabela: 'Sim',
+    freteCaminhaoInput: 0,
+    aplicarMarkup: 'Não',
+    descontoManual: 0,
+    valorNegociado: 0,
+    aluguelEquipamentoInput: 0,
+    cargaQtd: 1,
+    descargaQtd: 1,
+    pedagioInfo: 150,
+    custosIncidemTributos: 'Sim',
+  },
+]
+
+export const initialMethodology: Methodology = 'LTL'
