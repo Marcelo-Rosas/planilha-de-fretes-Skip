@@ -15,6 +15,11 @@ export const calculateAll = (row: OperationalRow, store: FreightState) => {
 
   const ufKey = `${row.ufOrigem}→${row.ufDestino}`
 
+  const lotacaoRate =
+    methodology === 'LOTAÇÃO' && row.usarTabela === 'Sim'
+      ? tabelaLotacao.find((r) => row.km >= r.de_km && row.km <= r.ate_km)
+      : undefined
+
   const precoBase = (() => {
     if (row.usarTabela === 'Não') return row.freteCaminhaoInput
     switch (methodology) {
@@ -25,10 +30,9 @@ export const calculateAll = (row: OperationalRow, store: FreightState) => {
         return rate ? rate.rs_t * row.peso : row.freteCaminhaoInput
       }
       case 'LOTAÇÃO': {
-        const rate = tabelaLotacao.find(
-          (r) => row.km >= r.de_km && row.km <= r.ate_km,
-        )
-        return rate ? rate.rs_t * row.peso : row.freteCaminhaoInput
+        return lotacaoRate
+          ? lotacaoRate.rs_t * row.peso
+          : row.freteCaminhaoInput
       }
       case 'ANTT': {
         const coef = coeficientesANTT.find(
@@ -48,7 +52,7 @@ export const calculateAll = (row: OperationalRow, store: FreightState) => {
       case 'LTL':
         return paramLTL.custoValor * row.valorNF
       case 'LOTAÇÃO':
-        return 0
+        return (lotacaoRate?.custo_valor ?? 0) * row.valorNF
       case 'ANTT':
         return paramANTT.adValorem * row.valorNF
       case 'CONTEINER':
@@ -63,7 +67,7 @@ export const calculateAll = (row: OperationalRow, store: FreightState) => {
       case 'LTL':
         return paramLTL.gris * row.valorNF
       case 'LOTAÇÃO':
-        return paramLotacao.gris * row.valorNF
+        return (lotacaoRate?.gris ?? paramLotacao.gris) * row.valorNF
       case 'ANTT':
         return paramANTT.gris * row.valorNF
       case 'CONTEINER':
@@ -78,7 +82,7 @@ export const calculateAll = (row: OperationalRow, store: FreightState) => {
       case 'LTL':
         return paramLTL.tso * row.valorNF
       case 'LOTAÇÃO':
-        return 0
+        return (lotacaoRate?.tso ?? 0) * row.valorNF
       case 'ANTT':
         return 0
       case 'CONTEINER':

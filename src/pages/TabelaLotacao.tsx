@@ -57,12 +57,13 @@ export default function TabelaLotacaoPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>De (km)</TableHead>
-              <TableHead>Até (km)</TableHead>
-              <TableHead>R$/t</TableHead>
-              <TableHead>Custo Valor %</TableHead>
-              <TableHead>TSO %</TableHead>
-              <TableHead>GRIS %</TableHead>
+              <TableHead>KM De</TableHead>
+              <TableHead>KM Até</TableHead>
+              <TableHead>Faixa KM</TableHead>
+              <TableHead>Custo Peso (R$/t)</TableHead>
+              <TableHead>Custo Valor (%)</TableHead>
+              <TableHead>GRIS (%)</TableHead>
+              <TableHead>TSO (%)</TableHead>
               <TableHead>Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -89,6 +90,7 @@ export default function TabelaLotacaoPage() {
                     className="w-full bg-transparent"
                   />
                 </TableCell>
+                <TableCell className="whitespace-nowrap">{`${row.de_km} - ${row.ate_km}`}</TableCell>
                 <TableCell>
                   <Input
                     type="number"
@@ -102,13 +104,10 @@ export default function TabelaLotacaoPage() {
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.custo_valor * 100}
+                    step="0.0001"
+                    value={row.custo_valor}
                     onChange={(e) =>
-                      handleInputChange(
-                        row.id,
-                        'custo_valor',
-                        String(parseFloat(e.target.value) / 100),
-                      )
+                      handleInputChange(row.id, 'custo_valor', e.target.value)
                     }
                     className="w-full bg-transparent"
                   />
@@ -116,13 +115,10 @@ export default function TabelaLotacaoPage() {
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.tso * 100}
+                    step="0.0001"
+                    value={row.gris}
                     onChange={(e) =>
-                      handleInputChange(
-                        row.id,
-                        'tso',
-                        String(parseFloat(e.target.value) / 100),
-                      )
+                      handleInputChange(row.id, 'gris', e.target.value)
                     }
                     className="w-full bg-transparent"
                   />
@@ -130,13 +126,10 @@ export default function TabelaLotacaoPage() {
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.gris * 100}
+                    step="0.0001"
+                    value={row.tso}
                     onChange={(e) =>
-                      handleInputChange(
-                        row.id,
-                        'gris',
-                        String(parseFloat(e.target.value) / 100),
-                      )
+                      handleInputChange(row.id, 'tso', e.target.value)
                     }
                     className="w-full bg-transparent"
                   />
