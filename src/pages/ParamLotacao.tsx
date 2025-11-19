@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
 
 export default function ParamLotacaoPage() {
-  const { paramLotacao, saveParamLotacao } = useFreight()
+  const { paramLotacao, saveParamLotacao, isLoading } = useFreight()
 
   const handleSave = () => {
     saveParamLotacao(paramLotacao)
@@ -14,6 +15,14 @@ export default function ParamLotacaoPage() {
   const handleChange = (field: keyof typeof paramLotacao, value: string) => {
     const numValue = parseFloat(value) / 100
     saveParamLotacao({ ...paramLotacao, [field]: numValue })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (

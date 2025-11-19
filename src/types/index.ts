@@ -169,4 +169,6 @@ export interface FreightState {
   setCoeficientesANTT: (data: CoeficienteANTTRow[]) => void
   icmsInterestadual: ICMSInterestadualRow[]
   setIcmsInterestadual: (data: ICMSInterestadualRow[]) => void
+
+  isLoading: boolean
 }

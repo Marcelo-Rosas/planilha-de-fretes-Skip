@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -25,7 +25,16 @@ export default function TabelaLotacaoPage() {
     addTabelaLotacaoRow,
     updateTabelaLotacaoRow,
     removeTabelaLotacaoRow,
+    isLoading,
   } = useFreight()
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">

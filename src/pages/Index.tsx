@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Trash2, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { Trash2, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react'
 import { UFS, formatCurrency, cn } from '@/lib/utils'
 import { calculateAll } from '@/lib/formulas'
 
@@ -372,7 +372,8 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
 }
 
 export default function OperacionalPage() {
-  const { methodology, setMethodology, operationalRows, addRow } = useFreight()
+  const { methodology, setMethodology, operationalRows, addRow, isLoading } =
+    useFreight()
 
   const isLotacao = methodology === 'LOTAÇÃO'
 
@@ -420,6 +421,14 @@ export default function OperacionalPage() {
     'Status',
     'Ações',
   ].filter(Boolean)
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="p-4">

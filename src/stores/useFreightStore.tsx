@@ -53,31 +53,54 @@ export function FreightProvider({ children }: { children: ReactNode }) {
   const [icmsInterestadual, setIcmsInterestadual] = useState(
     initialICMSInterestadual,
   )
+  const [isLoading, setIsLoading] = useState(true)
 
   // Fetch Lotacao Data from Supabase
   useEffect(() => {
     const fetchLotacaoData = async () => {
-      // Fetch Params
-      const { data: paramsData, error: paramsError } = await supabase
-        .from('parametros_lotacao')
-        .select('*')
-        .single()
+      setIsLoading(true)
+      try {
+        // Fetch Params
+        const { data: paramsData, error: paramsError } = await supabase
+          .from('parametros_lotacao')
+          .select('*')
+          .single()
 
-      if (paramsData) {
-        setParamLotacao(paramsData)
-      } else if (paramsError && paramsError.code !== 'PGRST116') {
-        console.error('Error fetching parametros_lotacao:', paramsError)
-      }
+        if (paramsData) {
+          setParamLotacao(paramsData)
+        } else if (paramsError && paramsError.code !== 'PGRST116') {
+          console.error('Error fetching parametros_lotacao:', paramsError)
+          toast({
+            title: 'Erro ao carregar parâmetros',
+            description: paramsError.message,
+            variant: 'destructive',
+          })
+        }
 
-      // Fetch Table
-      const { data: tableData, error: tableError } = await supabase
-        .from('tabela_lotacao')
-        .select('*')
+        // Fetch Table
+        const { data: tableData, error: tableError } = await supabase
+          .from('tabela_lotacao')
+          .select('*')
 
-      if (tableData) {
-        setTabelaLotacao(tableData)
-      } else if (tableError) {
-        console.error('Error fetching tabela_lotacao:', tableError)
+        if (tableData) {
+          setTabelaLotacao(tableData)
+        } else if (tableError) {
+          console.error('Error fetching tabela_lotacao:', tableError)
+          toast({
+            title: 'Erro ao carregar tabela',
+            description: tableError.message,
+            variant: 'destructive',
+          })
+        }
+      } catch (error: any) {
+        console.error('Unexpected error:', error)
+        toast({
+          title: 'Erro inesperado',
+          description: error.message || 'Ocorreu um erro ao carregar os dados.',
+          variant: 'destructive',
+        })
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -239,6 +262,7 @@ export function FreightProvider({ children }: { children: ReactNode }) {
       setCoeficientesANTT,
       icmsInterestadual,
       setIcmsInterestadual,
+      isLoading,
     }),
     [
       methodology,
@@ -252,6 +276,7 @@ export function FreightProvider({ children }: { children: ReactNode }) {
       eixos,
       coeficientesANTT,
       icmsInterestadual,
+      isLoading,
     ],
   )
 
