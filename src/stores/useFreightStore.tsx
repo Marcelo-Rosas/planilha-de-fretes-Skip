@@ -1,6 +1,19 @@
-import { createContext, useContext, useState, ReactNode, useMemo } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useEffect,
+} from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { FreightState, Methodology, OperationalRow } from '@/types'
+import {
+  FreightState,
+  Methodology,
+  OperationalRow,
+  ParamLotacao,
+  TabelaLotacaoRow,
+} from '@/types'
 import {
   initialMethodology,
   initialOperationalRows,
@@ -14,6 +27,8 @@ import {
   initialCoeficientesANTT,
   initialICMSInterestadual,
 } from '@/lib/initialData'
+import { supabase } from '@/lib/supabase/client'
+import { toast } from '@/hooks/use-toast'
 
 const FreightContext = createContext<FreightState | undefined>(undefined)
 
@@ -39,6 +54,36 @@ export function FreightProvider({ children }: { children: ReactNode }) {
     initialICMSInterestadual,
   )
 
+  // Fetch Lotacao Data from Supabase
+  useEffect(() => {
+    const fetchLotacaoData = async () => {
+      // Fetch Params
+      const { data: paramsData, error: paramsError } = await supabase
+        .from('parametros_lotacao')
+        .select('*')
+        .single()
+
+      if (paramsData) {
+        setParamLotacao(paramsData)
+      } else if (paramsError && paramsError.code !== 'PGRST116') {
+        console.error('Error fetching parametros_lotacao:', paramsError)
+      }
+
+      // Fetch Table
+      const { data: tableData, error: tableError } = await supabase
+        .from('tabela_lotacao')
+        .select('*')
+
+      if (tableData) {
+        setTabelaLotacao(tableData)
+      } else if (tableError) {
+        console.error('Error fetching tabela_lotacao:', tableError)
+      }
+    }
+
+    fetchLotacaoData()
+  }, [])
+
   const addRow = () => {
     const newRow: OperationalRow = {
       id: uuidv4(),
@@ -60,6 +105,8 @@ export function FreightProvider({ children }: { children: ReactNode }) {
       descargaQtd: 0,
       pedagioInfo: 0,
       custosIncidemTributos: 'Sim',
+      custoCargaInput: 0,
+      custoDescargaInput: 0,
     }
     setOperationalRows((prev) => [...prev, newRow])
   }
@@ -72,6 +119,93 @@ export function FreightProvider({ children }: { children: ReactNode }) {
     setOperationalRows((prev) =>
       prev.map((row) => (row.id === id ? { ...row, ...newRowData } : row)),
     )
+  }
+
+  const saveParamLotacao = async (params: ParamLotacao) => {
+    setParamLotacao(params)
+    const { error } = await supabase.from('parametros_lotacao').upsert(params)
+
+    if (error) {
+      toast({
+        title: 'Erro ao salvar parâmetros',
+        description: error.message,
+        variant: 'destructive',
+      })
+    } else {
+      toast({
+        title: 'Parâmetros salvos',
+        description: 'Os parâmetros de Lotação foram atualizados.',
+      })
+    }
+  }
+
+  const addTabelaLotacaoRow = async () => {
+    const newRow: Partial<TabelaLotacaoRow> = {
+      uf_origem: 'SP',
+      uf_destino: 'RJ',
+      km_min: 0,
+      km_max: 100,
+      custo_peso_rs_ton: 0,
+      gris_percent: 0,
+      tso_percent: 0,
+    }
+
+    const { data, error } = await supabase
+      .from('tabela_lotacao')
+      .insert(newRow)
+      .select()
+      .single()
+
+    if (data) {
+      setTabelaLotacao((prev) => [...prev, data])
+    } else if (error) {
+      toast({
+        title: 'Erro ao adicionar linha',
+        description: error.message,
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const updateTabelaLotacaoRow = async (
+    id: string,
+    data: Partial<TabelaLotacaoRow>,
+  ) => {
+    // Optimistic update
+    setTabelaLotacao((prev) =>
+      prev.map((row) => (row.id === id ? { ...row, ...data } : row)),
+    )
+
+    const { error } = await supabase
+      .from('tabela_lotacao')
+      .update(data)
+      .eq('id', id)
+
+    if (error) {
+      toast({
+        title: 'Erro ao atualizar linha',
+        description: error.message,
+        variant: 'destructive',
+      })
+      // Revert logic could be added here
+    }
+  }
+
+  const removeTabelaLotacaoRow = async (id: string) => {
+    setTabelaLotacao((prev) => prev.filter((row) => row.id !== id))
+
+    const { error } = await supabase
+      .from('tabela_lotacao')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      toast({
+        title: 'Erro ao remover linha',
+        description: error.message,
+        variant: 'destructive',
+      })
+    }
   }
 
   const value = useMemo(
@@ -87,6 +221,7 @@ export function FreightProvider({ children }: { children: ReactNode }) {
       setParamLTL,
       paramLotacao,
       setParamLotacao,
+      saveParamLotacao,
       paramANTT,
       setParamANTT,
       paramConteiner,
@@ -95,6 +230,9 @@ export function FreightProvider({ children }: { children: ReactNode }) {
       setTabelaLTL,
       tabelaLotacao,
       setTabelaLotacao,
+      addTabelaLotacaoRow,
+      updateTabelaLotacaoRow,
+      removeTabelaLotacaoRow,
       eixos,
       setEixos,
       coeficientesANTT,

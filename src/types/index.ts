@@ -22,6 +22,9 @@ export interface OperationalRow {
   descargaQtd: number
   pedagioInfo: number
   custosIncidemTributos: 'Sim' | 'Não'
+  // New fields for Lotacao
+  custoCargaInput: number
+  custoDescargaInput: number
 }
 
 export interface ParamLTL {
@@ -43,18 +46,14 @@ export interface ParamLTL {
 }
 
 export interface ParamLotacao {
-  overhead: number
-  das: number
-  icmsDefault: number
-  rctrc: number
-  rcdc: number
-  valorPessoa: number
-  baseDasIncluiPedagio: boolean
-  baseDasIncluiCarga: boolean
-  baseDasIncluiDescarga: boolean
-  baseDasIncluiAluguel: boolean
-  overheadBase: 'Receita_CT-e' | 'Receita_Ajustada'
-  margensOpcoes: string
+  id?: string
+  icms_percent: number
+  das_percent: number
+  rctr_c_percent: number
+  rc_dc_percent: number
+  markup_percent: number
+  seguros_percent: number
+  overhead_percent: number
 }
 
 export interface ParamANTT {
@@ -102,12 +101,13 @@ export interface TabelaLTLRow {
 
 export interface TabelaLotacaoRow {
   id: string
-  de_km: number
-  ate_km: number
-  rs_t: number
-  custo_valor: number
-  tso: number
-  gris: number
+  uf_origem: UF | string
+  uf_destino: UF | string
+  km_min: number
+  km_max: number
+  custo_peso_rs_ton: number
+  gris_percent: number
+  tso_percent: number
 }
 
 export interface EixoRow {
@@ -144,6 +144,8 @@ export interface FreightState {
   setParamLTL: (params: ParamLTL) => void
   paramLotacao: ParamLotacao
   setParamLotacao: (params: ParamLotacao) => void
+  saveParamLotacao: (params: ParamLotacao) => Promise<void>
+
   paramANTT: ParamANTT
   setParamANTT: (params: ParamANTT) => void
   paramConteiner: ParamConteiner
@@ -151,8 +153,16 @@ export interface FreightState {
 
   tabelaLTL: TabelaLTLRow[]
   setTabelaLTL: (data: TabelaLTLRow[]) => void
+
   tabelaLotacao: TabelaLotacaoRow[]
   setTabelaLotacao: (data: TabelaLotacaoRow[]) => void
+  addTabelaLotacaoRow: () => Promise<void>
+  updateTabelaLotacaoRow: (
+    id: string,
+    data: Partial<TabelaLotacaoRow>,
+  ) => Promise<void>
+  removeTabelaLotacaoRow: (id: string) => Promise<void>
+
   eixos: EixoRow[]
   setEixos: (data: EixoRow[]) => void
   coeficientesANTT: CoeficienteANTTRow[]

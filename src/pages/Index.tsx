@@ -24,7 +24,7 @@ import { calculateAll } from '@/lib/formulas'
 
 const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
   const store = useFreight()
-  const { updateRow, removeRow } = store
+  const { updateRow, removeRow, methodology } = store
 
   const calculations = useMemo(() => calculateAll(row, store), [row, store])
 
@@ -44,6 +44,8 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
     if (margin >= 0 && margin < 0.05) return 'bg-yellow-100 text-yellow-700'
     return 'bg-green-100 text-green-700'
   }
+
+  const isLotacao = methodology === 'LOTAÇÃO'
 
   return (
     <TableRow>
@@ -161,18 +163,22 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
           }
         />
       </TableCell>
-      <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
-        {formatCurrency(calculations.custoValor)}
-      </TableCell>
-      <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
-        {formatCurrency(calculations.gris)}
-      </TableCell>
-      <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
-        {formatCurrency(calculations.tso)}
-      </TableCell>
-      <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
-        {formatCurrency(calculations.receitaR)}
-      </TableCell>
+      {!isLotacao && (
+        <>
+          <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
+            {formatCurrency(calculations.custoValor)}
+          </TableCell>
+          <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
+            {formatCurrency(calculations.gris)}
+          </TableCell>
+          <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
+            {formatCurrency(calculations.tso)}
+          </TableCell>
+          <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
+            {formatCurrency(calculations.receitaR)}
+          </TableCell>
+        </>
+      )}
       <TableCell className="min-w-[120px]">
         <Select
           value={row.aplicarMarkup}
@@ -187,24 +193,28 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
           </SelectContent>
         </Select>
       </TableCell>
-      <TableCell className="min-w-[150px]">
-        <Input
-          type="number"
-          value={row.descontoManual}
-          onChange={(e) =>
-            handleInputChange('descontoManual', parseFloat(e.target.value))
-          }
-        />
-      </TableCell>
-      <TableCell className="min-w-[150px]">
-        <Input
-          type="number"
-          value={row.valorNegociado}
-          onChange={(e) =>
-            handleInputChange('valorNegociado', parseFloat(e.target.value))
-          }
-        />
-      </TableCell>
+      {!isLotacao && (
+        <>
+          <TableCell className="min-w-[150px]">
+            <Input
+              type="number"
+              value={row.descontoManual}
+              onChange={(e) =>
+                handleInputChange('descontoManual', parseFloat(e.target.value))
+              }
+            />
+          </TableCell>
+          <TableCell className="min-w-[150px]">
+            <Input
+              type="number"
+              value={row.valorNegociado}
+              onChange={(e) =>
+                handleInputChange('valorNegociado', parseFloat(e.target.value))
+              }
+            />
+          </TableCell>
+        </>
+      )}
       <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
         {formatCurrency(calculations.receitaAjustada)}
       </TableCell>
@@ -220,27 +230,55 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
           }
         />
       </TableCell>
-      <TableCell className="min-w-[100px]">
-        <Input
-          type="number"
-          value={row.cargaQtd}
-          onChange={(e) =>
-            handleInputChange('cargaQtd', parseInt(e.target.value))
-          }
-        />
-      </TableCell>
-      <TableCell className="min-w-[100px]">
-        <Input
-          type="number"
-          value={row.descargaQtd}
-          onChange={(e) =>
-            handleInputChange('descargaQtd', parseInt(e.target.value))
-          }
-        />
-      </TableCell>
-      <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
-        {formatCurrency(calculations.valorPessoa)}
-      </TableCell>
+      {isLotacao ? (
+        <>
+          <TableCell className="min-w-[150px]">
+            <Input
+              type="number"
+              value={row.custoCargaInput}
+              onChange={(e) =>
+                handleInputChange('custoCargaInput', parseFloat(e.target.value))
+              }
+            />
+          </TableCell>
+          <TableCell className="min-w-[150px]">
+            <Input
+              type="number"
+              value={row.custoDescargaInput}
+              onChange={(e) =>
+                handleInputChange(
+                  'custoDescargaInput',
+                  parseFloat(e.target.value),
+                )
+              }
+            />
+          </TableCell>
+        </>
+      ) : (
+        <>
+          <TableCell className="min-w-[100px]">
+            <Input
+              type="number"
+              value={row.cargaQtd}
+              onChange={(e) =>
+                handleInputChange('cargaQtd', parseInt(e.target.value))
+              }
+            />
+          </TableCell>
+          <TableCell className="min-w-[100px]">
+            <Input
+              type="number"
+              value={row.descargaQtd}
+              onChange={(e) =>
+                handleInputChange('descargaQtd', parseInt(e.target.value))
+              }
+            />
+          </TableCell>
+          <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
+            {formatCurrency(calculations.valorPessoa)}
+          </TableCell>
+        </>
+      )}
       <TableCell className="min-w-[150px]">
         <Input
           type="number"
@@ -264,9 +302,11 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
           </SelectContent>
         </Select>
       </TableCell>
-      <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
-        {formatCurrency(calculations.freteFinal)}
-      </TableCell>
+      {!isLotacao && (
+        <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right">
+          {formatCurrency(calculations.freteFinal)}
+        </TableCell>
+      )}
       <TableCell className="min-w-[150px] bg-blue-50 font-mono text-right text-red-600">
         {formatCurrency(calculations.carreteiroNeg)}
       </TableCell>
@@ -313,16 +353,13 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
         )}
       >
         <div className="flex items-center justify-end gap-2">
-          {calculations.margemFinal < 0 && (
-            <AlertTriangle className="h-4 w-4" />
-          )}
-          {calculations.margemFinal >= 0 && calculations.margemFinal < 0.05 && (
-            <AlertTriangle className="h-4 w-4" />
-          )}
-          {calculations.margemFinal >= 0.05 && (
-            <CheckCircle2 className="h-4 w-4" />
-          )}
-          {(calculations.margemFinal * 100).toFixed(2)}%
+          {calculations.resultado < 0 && <AlertTriangle className="h-4 w-4" />}
+          {calculations.resultado >= 0 && <CheckCircle2 className="h-4 w-4" />}
+          {isLotacao
+            ? calculations.resultado > 0
+              ? 'Viável'
+              : 'Inviável'
+            : `${(calculations.margemFinal * 100).toFixed(2)}%`}
         </div>
       </TableCell>
       <TableCell>
@@ -337,6 +374,8 @@ const OperacionalRowComponent = ({ row }: { row: OperationalRow }) => {
 export default function OperacionalPage() {
   const { methodology, setMethodology, operationalRows, addRow } = useFreight()
 
+  const isLotacao = methodology === 'LOTAÇÃO'
+
   const headers = [
     'Embarcador',
     'Cliente',
@@ -350,21 +389,21 @@ export default function OperacionalPage() {
     'Usar Tabela?',
     'Preço Base R$',
     'Frete Caminhão Input R$',
-    'Custo Valor R$',
-    'GRIS R$',
-    'TSO R$',
-    'Receita R$ (R)',
+    !isLotacao && 'Custo Valor R$',
+    !isLotacao && 'GRIS R$',
+    !isLotacao && 'TSO R$',
+    !isLotacao && 'Receita R$ (R)',
     'Aplicar Markup',
-    'Desconto Manual R$',
-    'Valor Negociado R$',
+    !isLotacao && 'Desconto Manual R$',
+    !isLotacao && 'Valor Negociado R$',
     'Receita R$ (R) Ajustada',
     'Aluguel Equi. Input R$',
-    'Carga (qtd)',
-    'Descarga (qtd)',
-    'Valor Pessoa R$',
+    isLotacao ? 'Custo Carga R$' : 'Carga (qtd)',
+    isLotacao ? 'Custo Descarga R$' : 'Descarga (qtd)',
+    !isLotacao && 'Valor Pessoa R$',
     'Pedágio Inf. R$',
     'Custos Incidem Tributos?',
-    'Frete R$',
+    !isLotacao && 'Frete R$',
     'Carreteiro R$ neg',
     'Custo Carga R$ neg',
     'Custo Descarga R$ neg',
@@ -378,9 +417,9 @@ export default function OperacionalPage() {
     'Margem Líquida R$',
     'Overhead R$',
     'Resultado R$',
-    'Margem Final %',
+    'Status',
     'Ações',
-  ]
+  ].filter(Boolean)
 
   return (
     <div className="p-4">
@@ -411,7 +450,10 @@ export default function OperacionalPage() {
           <TableHeader>
             <TableRow>
               {headers.map((h) => (
-                <TableHead key={h} className="sticky top-0 bg-background">
+                <TableHead
+                  key={h as string}
+                  className="sticky top-0 bg-background whitespace-nowrap"
+                >
                   {h}
                 </TableHead>
               ))}

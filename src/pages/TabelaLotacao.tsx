@@ -1,5 +1,4 @@
 import { useFreight } from '@/stores/useFreightStore'
-import { TabelaLotacaoRow } from '@/types'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -10,58 +9,39 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Trash2 } from 'lucide-react'
-import { v4 as uuidv4 } from 'uuid'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { UFS } from '@/lib/utils'
 
 export default function TabelaLotacaoPage() {
-  const { tabelaLotacao, setTabelaLotacao } = useFreight()
-
-  const handleAddRow = () => {
-    const newRow: TabelaLotacaoRow = {
-      id: uuidv4(),
-      de_km: 0,
-      ate_km: 0,
-      rs_t: 0,
-      custo_valor: 0,
-      tso: 0,
-      gris: 0,
-    }
-    setTabelaLotacao([...tabelaLotacao, newRow])
-  }
-
-  const handleRemoveRow = (id: string) => {
-    setTabelaLotacao(tabelaLotacao.filter((row) => row.id !== id))
-  }
-
-  const handleInputChange = (
-    id: string,
-    field: keyof TabelaLotacaoRow,
-    value: string,
-  ) => {
-    const updatedTable = tabelaLotacao.map((row) => {
-      if (row.id === id) {
-        return { ...row, [field]: parseFloat(value) || 0 }
-      }
-      return row
-    })
-    setTabelaLotacao(updatedTable)
-  }
+  const {
+    tabelaLotacao,
+    addTabelaLotacaoRow,
+    updateTabelaLotacaoRow,
+    removeTabelaLotacaoRow,
+  } = useFreight()
 
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Tabela Lotação</h1>
-        <Button onClick={handleAddRow}>Adicionar Linha</Button>
+        <Button onClick={addTabelaLotacaoRow}>Adicionar Linha</Button>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>KM De</TableHead>
-              <TableHead>KM Até</TableHead>
-              <TableHead>Faixa KM</TableHead>
+              <TableHead>UF Origem</TableHead>
+              <TableHead>UF Destino</TableHead>
+              <TableHead>KM Min</TableHead>
+              <TableHead>KM Max</TableHead>
               <TableHead>Custo Peso (R$/t)</TableHead>
-              <TableHead>Custo Valor (%)</TableHead>
               <TableHead>GRIS (%)</TableHead>
               <TableHead>TSO (%)</TableHead>
               <TableHead>Ações</TableHead>
@@ -71,83 +51,108 @@ export default function TabelaLotacaoPage() {
             {tabelaLotacao.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>
+                  <Select
+                    value={row.uf_origem}
+                    onValueChange={(v) =>
+                      updateTabelaLotacaoRow(row.id, { uf_origem: v })
+                    }
+                  >
+                    <SelectTrigger className="w-[80px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {UFS.map((uf) => (
+                        <SelectItem key={uf} value={uf}>
+                          {uf}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell>
+                  <Select
+                    value={row.uf_destino}
+                    onValueChange={(v) =>
+                      updateTabelaLotacaoRow(row.id, { uf_destino: v })
+                    }
+                  >
+                    <SelectTrigger className="w-[80px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {UFS.map((uf) => (
+                        <SelectItem key={uf} value={uf}>
+                          {uf}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell>
                   <Input
                     type="number"
-                    value={row.de_km}
+                    value={row.km_min}
                     onChange={(e) =>
-                      handleInputChange(row.id, 'de_km', e.target.value)
+                      updateTabelaLotacaoRow(row.id, {
+                        km_min: parseInt(e.target.value),
+                      })
                     }
-                    className="w-full bg-transparent"
+                    className="w-20"
                   />
                 </TableCell>
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.ate_km}
+                    value={row.km_max}
                     onChange={(e) =>
-                      handleInputChange(row.id, 'ate_km', e.target.value)
+                      updateTabelaLotacaoRow(row.id, {
+                        km_max: parseInt(e.target.value),
+                      })
                     }
-                    className="w-full bg-transparent"
-                  />
-                </TableCell>
-                <TableCell className="whitespace-nowrap">{`${row.de_km} - ${row.ate_km}`}</TableCell>
-                <TableCell>
-                  <Input
-                    type="number"
-                    value={row.rs_t}
-                    onChange={(e) =>
-                      handleInputChange(row.id, 'rs_t', e.target.value)
-                    }
-                    className="w-full bg-transparent"
+                    className="w-20"
                   />
                 </TableCell>
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.custo_valor * 100}
+                    value={row.custo_peso_rs_ton}
                     onChange={(e) =>
-                      handleInputChange(
-                        row.id,
-                        'custo_valor',
-                        String(parseFloat(e.target.value) / 100),
-                      )
+                      updateTabelaLotacaoRow(row.id, {
+                        custo_peso_rs_ton: parseFloat(e.target.value),
+                      })
                     }
-                    className="w-full bg-transparent"
+                    className="w-24"
                   />
                 </TableCell>
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.gris * 100}
+                    value={row.gris_percent * 100}
                     onChange={(e) =>
-                      handleInputChange(
-                        row.id,
-                        'gris',
-                        String(parseFloat(e.target.value) / 100),
-                      )
+                      updateTabelaLotacaoRow(row.id, {
+                        gris_percent: parseFloat(e.target.value) / 100,
+                      })
                     }
-                    className="w-full bg-transparent"
+                    className="w-20"
                   />
                 </TableCell>
                 <TableCell>
                   <Input
                     type="number"
-                    value={row.tso * 100}
+                    value={row.tso_percent * 100}
                     onChange={(e) =>
-                      handleInputChange(
-                        row.id,
-                        'tso',
-                        String(parseFloat(e.target.value) / 100),
-                      )
+                      updateTabelaLotacaoRow(row.id, {
+                        tso_percent: parseFloat(e.target.value) / 100,
+                      })
                     }
-                    className="w-full bg-transparent"
+                    className="w-20"
                   />
                 </TableCell>
                 <TableCell>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleRemoveRow(row.id)}
+                    onClick={() => removeTabelaLotacaoRow(row.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

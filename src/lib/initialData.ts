@@ -32,18 +32,13 @@ export const initialParamLTL: ParamLTL = {
 }
 
 export const initialParamLotacao: ParamLotacao = {
-  overhead: 0.1,
-  das: 0.06,
-  icmsDefault: 0.12,
-  rctrc: 0.0005,
-  rcdc: 0.0005,
-  valorPessoa: 100,
-  baseDasIncluiPedagio: true,
-  baseDasIncluiCarga: true,
-  baseDasIncluiDescarga: true,
-  baseDasIncluiAluguel: true,
-  overheadBase: 'Receita_CT-e',
-  margensOpcoes: '15;20;25;30',
+  icms_percent: 0.12,
+  das_percent: 0.06,
+  rctr_c_percent: 0.0005,
+  rc_dc_percent: 0.0005,
+  markup_percent: 0.2,
+  seguros_percent: 0.01,
+  overhead_percent: 0.1,
 }
 
 export const initialParamANTT: ParamANTT = {
@@ -109,98 +104,7 @@ export const initialTabelaLTL: TabelaLTLRow[] = [
   },
 ]
 
-export const initialTabelaLotacao: TabelaLotacaoRow[] = [
-  {
-    id: uuidv4(),
-    de_km: 0,
-    ate_km: 100,
-    rs_t: 226.04,
-    custo_valor: 0.003,
-    tso: 0.002,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 101,
-    ate_km: 200,
-    rs_t: 210.5,
-    custo_valor: 0.003,
-    tso: 0.002,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 201,
-    ate_km: 400,
-    rs_t: 195.2,
-    custo_valor: 0.003,
-    tso: 0.002,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 401,
-    ate_km: 600,
-    rs_t: 180.4,
-    custo_valor: 0.003,
-    tso: 0.002,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 601,
-    ate_km: 800,
-    rs_t: 165.8,
-    custo_valor: 0.002,
-    tso: 0.001,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 801,
-    ate_km: 1000,
-    rs_t: 150.1,
-    custo_valor: 0.002,
-    tso: 0.001,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 1001,
-    ate_km: 1500,
-    rs_t: 135.5,
-    custo_valor: 0.002,
-    tso: 0.001,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 1501,
-    ate_km: 2000,
-    rs_t: 120.9,
-    custo_valor: 0.001,
-    tso: 0.001,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 2001,
-    ate_km: 3000,
-    rs_t: 105.3,
-    custo_valor: 0.001,
-    tso: 0.001,
-    gris: 0.001,
-  },
-  {
-    id: uuidv4(),
-    de_km: 3001,
-    ate_km: 99999,
-    rs_t: 90.7,
-    custo_valor: 0.001,
-    tso: 0.001,
-    gris: 0.001,
-  },
-]
+export const initialTabelaLotacao: TabelaLotacaoRow[] = []
 
 export const initialEixos: EixoRow[] = [
   { id: uuidv4(), eixo: 2, descricao: 'Caminhão-toco' },
@@ -250,6 +154,8 @@ export const initialOperationalRows: OperationalRow[] = [
     descargaQtd: 1,
     pedagioInfo: 150,
     custosIncidemTributos: 'Sim',
+    custoCargaInput: 0,
+    custoDescargaInput: 0,
   },
 ]
 
