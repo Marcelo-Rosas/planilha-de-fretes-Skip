@@ -22,7 +22,6 @@ export interface OperationalRow {
   descargaQtd: number
   pedagioInfo: number
   custosIncidemTributos: 'Sim' | 'Não'
-  // New fields for Lotacao
   custoCargaInput: number
   custoDescargaInput: number
 }

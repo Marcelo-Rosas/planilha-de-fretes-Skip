@@ -1,22 +1,10 @@
-/* General utility functions (exposes cn) */
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
-/**
- * Merges multiple class names into a single string
- * @param inputs - Array of class names
- * @returns Merged class names
- */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-/**
- * Formats a number into Brazilian currency format.
- * Negative numbers are enclosed in parentheses.
- * @param value - The number to format.
- * @returns The formatted currency string.
- */
 export function formatCurrency(value: number | null | undefined): string {
   if (value === null || value === undefined || isNaN(value)) {
     return 'R$ 0,00'

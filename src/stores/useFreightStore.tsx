@@ -55,12 +55,10 @@ export function FreightProvider({ children }: { children: ReactNode }) {
   )
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch Lotacao Data from Supabase
   useEffect(() => {
     const fetchLotacaoData = async () => {
       setIsLoading(true)
       try {
-        // Fetch Params
         const { data: paramsData, error: paramsError } = await supabase
           .from('parametros_lotacao')
           .select('*')
@@ -77,7 +75,6 @@ export function FreightProvider({ children }: { children: ReactNode }) {
           })
         }
 
-        // Fetch Table
         const { data: tableData, error: tableError } = await supabase
           .from('tabela_lotacao')
           .select('*')
@@ -194,7 +191,6 @@ export function FreightProvider({ children }: { children: ReactNode }) {
     id: string,
     data: Partial<TabelaLotacaoRow>,
   ) => {
-    // Optimistic update
     setTabelaLotacao((prev) =>
       prev.map((row) => (row.id === id ? { ...row, ...data } : row)),
     )
@@ -210,7 +206,6 @@ export function FreightProvider({ children }: { children: ReactNode }) {
         description: error.message,
         variant: 'destructive',
       })
-      // Revert logic could be added here
     }
   }
 
